@@ -5,105 +5,90 @@ require 'csv'
 require 'byebug'
 
 def nairaland
+  
+  page_nos = []
+  url = 'https://www.nairaland.com/5042902/general-german-student-visa-enquiries/'
+  unparsed_page1 = HTTParty.get(url)
+  parsed_page1 = Nokogiri::HTML(unparsed_page1)
+  
+  tpages = parsed_page1.css('div.body div.nocopy a[href]')
 
-  page_nos = ["0","1"] # set array for page numbers
+  pages_arr = []
+  tpages.each do |tpage|
+    next if tpage.text.nil?
+    pages_arr << tpage.text.gsub(/\D/, "")
+    end 
+  pages_arr = pages_arr.reject(&:empty?).sort_by(&:to_i).reverse
 
+  highest_page = pages_arr[1].to_i
+  
+  
+  page_nos = *(0..highest_page) # set array range for page numbers
+
+  # heading = []
+  # body_data = []
+  head_data = []
+  post_data =[]
+  
   page_nos.each do |page_no|
-    urle = 'https://www.nairaland.com/5042902/general-german-student-visa-enquiries/' + page_no
-      unparsed_page = HTTParty.get(urle)
-      parsed_page = Nokogiri::HTML(unparsed_page)
-      tmain = parsed_page.css('div.body table tr td')
-      thead_all = tmain.css('.bold') #The table headings
-      # For the headings
-      # thead_all.each do |thead|
-      #   thread_topic = thead.css('a[href]').first.text
-      #   user_poster = thead.css('a.user').text
-      #   post_date = thead.css('span.s').text
-
-      #   puts thread_topic + " " + user_poster + " " + post_date
-      # end
-      
-      tdata_all = tmain.css('.pd') #The table data
-      ttext_all = tdata_all.css('div.narrow') #The table text
-      tlike_all = tdata_all.css('p.s b[id^="lp"]').text #The table actions 'like' attribute
-
-      tlike_figure = tlike_all.gsub(/\D/, "").to_i #Strip out the alphabets in the variable and converts to integer
-      
-      
-      byebug
-
-  end
-
-end
-  
-#   page_nos = ["1", "2"] # set array for page numbers
-  
-#   @scraped_data = []
-  
-#   page_nos.each do |page_no|
-#     # Iterate though the pages and parse the data
-#     urle = 'https://www.ukuni.net/universities?page=' + page_no
-#     unparsed_page = HTTParty.get(urle)
-#     parsed_page = Nokogiri::HTML(unparsed_page)
-  
-#     links_all = parsed_page.css('div.university-right-conbox-left-thumb a')
+    urle = 'https://www.nairaland.com/5042902/general-german-student-visa-enquiries/' + page_no.to_s
+    unparsed_page = HTTParty.get(urle)
+    parsed_page = Nokogiri::HTML(unparsed_page)
     
-#     loop_data = []
-#     # byebug 
     
-#     links_all.each do |link|
-#       # iterate through all links to the schools information and parse the data
-#       url = 'https://www.ukuni.net' + link.attributes["href"].value + '#tab/3'
-#       url2 = 'https://www.ukuni.net' + link.attributes["href"].value + '#tab/0'
-#       unparsed_page1 = HTTParty.get(url)
-#       unparsed_page2 = HTTParty.get(url2)
-#       parsed_page1 = Nokogiri::HTML(unparsed_page1)
-#       parsed_page2 = Nokogiri::HTML(unparsed_page2)
+    tmain = parsed_page.css('div.body table tr td')
+    
+    thead_all = tmain.css('.bold') #The table headings
+    
+    
+    thead_all.each do |thead|
+      thread_topic = thead.css('a[href]').first.text
+      user_poster = thead.css('a.user').text
+      post_date = thead.css('span.s').text
       
-#       school_name = parsed_page1.css('div.uni-detail-mid-box-bigtitle').text # grab the school name
-#       # grab the school description and strip off unwanted information
-#       school_desc = parsed_page1.css('div.uni-detail-mid-arti-innbg').text 
-#       school_desc1 = school_desc.gsub(/((.)(.*?)(?=About)|(?=Entry)(.*))/, "").gsub(/(About)/, "")
-#       # grab the link to the school if present
-#       school_link = parsed_page1.css('div.uni-detail-mid-arti-innbg p a').first == nil ? "site link not present" : parsed_page1.css('div.uni-detail-mid-arti-innbg p a').first.attributes["href"]
-#       # grab the latitude and longtitude if present
-#       school_lat = parsed_page2.css('div.geolocation meta').first == nil ? 0 : parsed_page2.css('div.geolocation meta').first.attributes["content"].value
-#       school_long = parsed_page2.css('div.geolocation meta').last == nil ? 0 : parsed_page2.css('div.geolocation meta').last.attributes["content"].value
-      
-#       # appends schools' data to array
-#       loop_data << [
-#         school_name,
-#         school_desc1,
-#         school_lat,
-#         school_long,
-#         school_link              
-#       ]
-      
-#       puts "***** School \"#{school_name}\" created ******* \n\n"
-      
-#     end
-
-#     puts "***** Total looped date for this section is \"#{loop_data.count}\" ******* \n\n"
-
-#     # appends the content of the loop to another array
-#     @scraped_data << loop_data 
-#   end
-  
-#   # writes the content of the arrays to CSV
-#   CSV.open("uk-universities.csv", "w", 
-#     :write_headers=> true,
-#     :headers => ["school_name","school_description","school_latitude", "school_longtitude", "school_link"]) do |csv|
-#       @scraped_data.each do |prit|
-#         prit.each do |rit|
-#           csv << rit
-#         end
+      head_data << {:topic => thread_topic,
+        :username => user_poster,
+        :date => post_date}
         
-#       end 
-#   end
-
-#   puts "***** Total scrapped data is \"#{@scraped_data[0].count + @scraped_data[1].count}\" ******* \n\n"
-
-# end
+      end
+      
+      
+      pdata_all = tmain.css('.pd') #The table data
+      
+      
+      pdata_all.each do |pdata|
+        
+        ptext = pdata.css('div.narrow').text #The table text
+        plike = pdata.css('p.s b[id^="lp"]').text #The table actions 'like' attribute
+        plike_figure = plike.gsub(/\D/, "") #Strip out the alphabets in the variable and converts to integer
+        
+        post_data << {:post_text => ptext,
+          :post_likes => plike_figure.to_i
+        }
+        
+      end 
+      
+      # heading << head_data
+      # body_data << post_data
+      
+  end
+  
+  combined_data = head_data.zip(post_data).to_h
+  
+  combined_data_rank = combined_data.sort_by{ |key, value| value[:post_likes] }.reverse.take(20)
+  
+  combined_data_rank.each do |key,val|
+    puts "Topic: #{key[:topic]} \n
+    Posted by #{key[:username]}, #{key[:date]} \n
+    Message: \n
+    #{val[:post_text]}. \n
+    Number of likes: #{val[:post_likes]} \n\n\n\n\n"
+    
+  end
+  
+  byebug
+  
+end
 
 
 nairaland
