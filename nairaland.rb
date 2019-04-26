@@ -5,7 +5,7 @@ require 'prawn'
 require 'byebug'
 
 def nairaland
-  
+  printed_on =Time.now
   #Defining the page numbers in order to iterate through it
   page_nos = []
   url = 'https://www.nairaland.com/5042902/general-german-student-visa-enquiries/'
@@ -72,7 +72,8 @@ def nairaland
         plike_figure = plike.gsub(/\D/, "") #Strip out the alphabets in the variable and converts to integer
         
         post_data << {:post_text => ptext,
-          :post_likes => plike_figure.to_i
+          :post_likes => plike_figure.to_i,
+          :page_number => page_no
         }
         
       end 
@@ -82,7 +83,7 @@ def nairaland
   
   combined_data = head_data.zip(post_data).to_h # Combine both headings data and body data into a hash of arrays
   
-  combined_data_rank = combined_data.sort_by{ |key, value| value[:post_likes] }.reverse.take(50) # sort and rank the combined data hash by the number of likes for each post and then take the top 20
+  combined_data_rank = combined_data.sort_by{ |key, value| value[:post_likes] }.reverse.take(50) # sort and rank the combined data hash by the number of likes for each post and then take only the top 50
   
   # output the result to PDF file
   Prawn::Document.generate("nairaland.pdf") do
@@ -92,7 +93,7 @@ def nairaland
       font "OpenSans"
       default_leading 5
       font_size(18) {text "#{key[:topic]} \n", :color => "0000FF"}
-      font_size(9) {text "Posted by:"} 
+      font_size(9) {text "Posted (on page <color rgb='FF00FF'>#{val[:page_number]}</color>) by:", :inline_format => true} 
       font_size(14) {text "#{key[:username]}", :color => "FF0000"} 
       font_size(9) {text "#{key[:date]} \n"} 
       move_down 10
@@ -115,12 +116,12 @@ def nairaland
         move_down 5
       end 
 
-      move_down 30
+      start_new_page
 
     end
 
     move_down 30
-    font_size(9) {text "crawled from <color rgb='0000FF'>#{url}</color> by Odogwudozilla", :inline_format => true, :color => "24292E"}
+    font_size(9) {text "Data scrapped from <color rgb='0000FF'>#{url}</color>, <color rgb='FF0000'>#{printed_on.strftime("%a, %d %b '%y at %I:%M%p") }</color> by Odogwudozilla", :inline_format => true, :color => "24292E"}
 
   end
 
