@@ -13,8 +13,8 @@ class SiteScraper
   
     #Defining the page numbers in order to iterate through it
     page_nos = []
-    url = MyUrls.new.urls_cache
-    unparsed_page1 = HTTParty.get(url)
+    url = MyUrls.new.urls_cache #grab the URL from the list on MyUrls class
+    unparsed_page1 = HTTParty.get(url)  
     parsed_page1 = Nokogiri::HTML(unparsed_page1)
     
     tpages = parsed_page1.css('div.body div.nocopy a[href]')
@@ -61,6 +61,7 @@ class SiteScraper
         user_poster = thead.css('a.user').text
         post_date = thead.css('span.s').text
         
+        # push head_data to array
         head_data << {:topic => thread_topic,
           :username => user_poster,
           :date => post_date}
@@ -77,13 +78,14 @@ class SiteScraper
           plike = pdata.css('p.s b[id^="lp"]').text #The table actions 'like' attribute
           plike_figure = plike.gsub(/\D/, "") #Strip out the alphabets in the variable and converts to integer
           
+          #push post_data to array
           post_data << {:post_text => ptext,
             :post_likes => plike_figure.to_i,
             :page_number => page_no
           }
           
         end 
-        puts "************data for page #{page_no} added ************"
+        puts "************Data for page #{page_no} added ************"
         
     end
     
@@ -94,6 +96,7 @@ class SiteScraper
  # output the result to PDF file
         Prawn::Document.generate("#{@page_title}.pdf") do
           font_families.update("Roboto"=>{:normal =>"fonts/Roboto/Roboto-Regular.ttf"}, "OpenSans"=>{:normal =>"fonts/Open_Sans/OpenSans-Regular.ttf"})
+
           combined_data_rank.each do |key,val|
             
             font "OpenSans"
@@ -107,12 +110,13 @@ class SiteScraper
             font_size(14) {text "#{val[:post_text]}. \n", :align => :justify, :indent_paragraphs => 20} 
             font "Roboto"
             text "Number of likes: <color rgb='0000FF'> #{val[:post_likes]}</color>", :inline_format => true
+
             # Configure the horizontal line
             stroke_color "24292E"
             x = 100
             y = 400
             7.times do 
-      
+              
               stroke do
                 horizontal_line x, y
               end
