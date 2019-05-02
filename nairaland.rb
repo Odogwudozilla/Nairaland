@@ -55,15 +55,18 @@ class SiteScraper
       
       thead_all.each do |thead|
         thread_topic = thead.css('a[href]').text
-        linke = thead.css('a[href*="#"]')[0],
+        linke = thead.css('a[name]')
+        link_target = linke[0]
+        link_target1 = link_target.first[1]
         user_poster = thead.css('a.user').text
         post_date = thead.css('span.s').text
         
         # push head_data to array
         head_data << {:topic => thread_topic,
           :username => user_poster,
-          # :topic_link => linke[0].attribute("href") == nil ? "dead link" : linke[0].attribute("href").value,
+          :topic_target => urle + "#" + link_target1, #linke[0].attribute("href") == nil ? "dead link" : 
           :date => post_date}
+
           # byebug
       end # end head_data
       
@@ -91,15 +94,24 @@ class SiteScraper
           }
           
       end # end pdata_all
-
-      puts "************Data for page #{page_no} added. Total headings = #{thead_all.count} while total bodytext = #{pdata_all.count}************"
+      #byebug
+      puts "************Data for page #{page_no} added.************"
       
     end
     # byebug
-    
+    # head_data = head_data.compact
+    # post_data = post_data.compact
     combined_data = head_data.zip(post_data).to_h # Combine both headings data and body data into a hash of arrays
     
+    #byebug
     $combined_data_rank = combined_data.sort_by{ |key, value| value[:post_likes] }.reverse.take(50) # sort and rank the combined data hash by the number of likes for each post and then take only the top 50
+
+    puts "[b]These are the top #{$combined_data_rank.count} posts fas at today: #{$printed_on.strftime("%a, %d %b '%y at %I:%M%p") }[/b]"
+    $combined_data_rank.each do |key, value|
+      
+      puts "#{key[:topic_target]} - (#{value[:post_likes]} likes)\n"
+
+    end 
     
     GenPdf.gen_pdf
     
