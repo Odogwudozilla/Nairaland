@@ -106,10 +106,10 @@ class SiteScraper
     #byebug
     $combined_data_rank = combined_data.sort_by{ |key, value| value[:post_likes] }.reverse.take(50) # sort and rank the combined data hash by the number of likes for each post and then take only the top 50
 
-    puts "[b]These are the top #{$combined_data_rank.count} posts fas at today: #{$printed_on.strftime("%a, %d %b '%y at %I:%M%p") }[/b]"
+    puts "[b]These are the top #{$combined_data_rank.count} posts as at today: #{$printed_on.strftime("%a, %d %b '%y at %I:%M%p") }[/b]"
     $combined_data_rank.each do |key, value|
       
-      puts "#{key[:topic_target]} - (#{value[:post_likes]} likes)\n"
+      puts "#{key[:topic_target]} - (#{value[:post_likes]} likes)\n\n"
 
     end 
     

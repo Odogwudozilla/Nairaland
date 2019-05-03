@@ -1,35 +1,41 @@
+    # encoding: utf-8
     # require_relative 'nairaland'
+
     
     class GenPdf 
       def self.gen_pdf
 
         # output the result to PDF file
         Prawn::Document.generate("#{$page_title}.pdf") do
-          font_families.update("Roboto"=>{:normal =>"fonts/Roboto/Roboto-Regular.ttf", :bold =>"fonts/Roboto/Roboto-Bold.ttf", :italic =>"fonts/Roboto/Roboto-Italic.ttf"}, "OpenSans"=>{:normal =>"fonts/Open_Sans/OpenSans-Regular.ttf", :bold =>"fonts/Open_Sans/OpenSans-Bold.ttf", :italic =>"fonts/Open_Sans/OpenSans-Italic.ttf"})
+          # Custom font families
+          font_families.update(
+            "Roboto"=>{:normal =>"fonts/Roboto/Roboto-Regular.ttf", :bold =>"fonts/Roboto/Roboto-Bold.ttf", :italic =>"fonts/Roboto/Roboto-Italic.ttf", :boldItalic =>"fonts/Roboto/Roboto-BoldItalic.ttf", :black =>"fonts/Roboto/Roboto-black.ttf", :blackitalic =>"fonts/Roboto/Roboto-BlackItalic.ttf", :light =>"fonts/Roboto/Roboto-light.ttf", :lightitalic =>"fonts/Roboto/Roboto-LightItalic.ttf"}, 
 
+            "OpenSans"=>{:normal =>"fonts/Open_Sans/OpenSans-Regular.ttf", :bold =>"fonts/Open_Sans/OpenSans-Bold.ttf", :italic =>"fonts/Open_Sans/OpenSans-Italic.ttf", :bolditalic =>"fonts/Open_Sans/OpenSans-BoldItalic.ttf", :extrabold =>"fonts/Open_Sans/OpenSans-ExtraBold.ttf", :extrabolditalic =>"fonts/Open_Sans/OpenSans-ExtraBoldItalic.ttf", :light =>"fonts/Open_Sans/OpenSans-Light.ttf", :lightitalic =>"fonts/Open_Sans/OpenSans-LightItalic.ttf"}
+          
+          )
+            # Iterate through and create PDF
           $combined_data_rank.each do |key,val|
             next puts "this data was skipped because appreciation less than 5" if val[:post_likes] < 5 
-            # puts "poster is #{key[:username]} on page #{val[:page_number]} "
 
             font "OpenSans"
             default_leading 5
 
-            # post_link = "https://www.nairaland.com" + val[:topic_link].to_s
-            # puts val[:topic_link]
 
-            font_size(18) {text "#{key[:topic]} \n", :color => "0000FF"}
-            font_size(9) {text "Posted (on page <color rgb='FF00FF'>#{val[:page_number].to_i + 1}</color>) by:", :inline_format => true} 
-            font_size(14) {text "#{key[:username]}", :color => "FF0000"} 
-            font_size(9) {text "#{key[:date]} \n"} 
-            font_size(9) {text "<color rgb='0000FF'><a href='#{key[:topic_target]}'>Click here to Visit page<a/></color>\n", :inline_format => true}
+            font_size(18) {text "#{key[:topic]} \n", :color => "0000FF"} #Print post topic
+            font_size(9) {text "Posted (on page <color rgb='FF00FF'>#{val[:page_number].to_i + 1}</color>) by:", :inline_format => true} # Print page number
+            font_size(14) {text "#{key[:username]}", :color => "FF0000"} # Print the username
+            font_size(9) {text "#{key[:date]} \n"} # print the date
+            font_size(9) {text "<color rgb='0000FF'><a href='#{key[:topic_target]}'>Click here to Visit page<a/></color>\n", :inline_format => true} # print the target link for the post
             
             move_down 10
-            font_size(14) {text "Message:", :color => "FF00FF"}
+            font_size(14) {text "Message:", :color => "FF00FF"} 
 
             span(490, :position => :center) do
-              font_size(12) {text "#{val[:post_text]}. \n", :align => :left, :indent_paragraphs => 20, :inline_format => true} 
+              font_size(12) {text "#{val[:post_text]}. \n", :align => :left, :indent_paragraphs => 20, :inline_format => true} # print the post message
               
-            end
+            end # end span
+
             font "Roboto"
             text "Number of likes: <color rgb='0000FF'> #{val[:post_likes]}</color>", :inline_format => true
 
@@ -61,8 +67,6 @@
       
         end #end Prawn
 
-      end 
+      end # end self.gen_pdf
 
-    end 
-
-    # GenPdf.new.gen_pdf
+    end # end GenPdf
