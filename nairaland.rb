@@ -21,9 +21,9 @@ class SiteScraper
     $page_nos = []
     
     Kontrol.prompter    
-    MyUrls.urls_cache
-    $urls_list |= [$user_input]
-    File.open("urls_nairaland.txt", "w+") { |f| $urls_list.each { |url| f.puts(url)} }
+    MyUrls.urls_cache    
+    $urls_list |= [$user_input] #checks if the supplied link exists in the urls_list and appends to list if not
+    File.open("urls_nairaland.txt", "w+") { |f| $urls_list.each { |url| f.puts(url)} } # writes the new value of the URL_list to file.
 
     $url = $user_input #grab the URL from the list on MyUrls class
     unparsed_page1 = HTTParty.get($url)  
@@ -43,7 +43,7 @@ class SiteScraper
     
     # picking the first or second array element as the highest page (still trying to figure out how to make this cleaner as a strange number keeps intermittently showing up as first array element. So I assume the thread page cannot go above 800 pages before the thread is closed)
      
-    highest_page = pages_arr[0].to_i > 800 ? pages_arr[1].to_i : pages_arr[15].to_i
+    highest_page = pages_arr[0].to_i > 800 ? pages_arr[1].to_i : pages_arr[14].to_i
      
     puts "The highest page in this session is #{highest_page}"
     
@@ -58,14 +58,14 @@ class SiteScraper
   # Does the actual dirty work
   def nairaland
   
-  
+    $top_posts = []
     head_data = [] # set empty array to collate table heading data on each page
     post_data =[] # set empty array to collate table body data on each page
     
     #Iterating through the page numbers
     $page_nos.each do |page_no|
   
-      urle = $url + page_no.to_s
+      urle = $url + "/" + page_no.to_s
       unparsed_page = HTTParty.get(urle)
       parsed_page = Nokogiri::HTML(unparsed_page)
       
@@ -132,12 +132,19 @@ class SiteScraper
     $combined_data_rank.each do |key, value|
       
       puts "#{key[:topic_target]} - (#{value[:post_likes]} likes)\n\n"
+      $top_posts << "#{key[:topic_target]} - (#{value[:post_likes]} likes)"
 
-    end 
+    end #end combined_data_rank
     
     GenPdf.gen_pdf
+
+    # # Moves the PDF(s) to own folder
+    #     pdf_dir = File.basename(Dir.getwd) + "/PDFs_generated"
+        
+    #     pdf_file = Dir.glob("*.{pdf,xps}")
+    #     FileUtils.mv pdf_file, pdf_dir
     
-    puts "$$*************Process completed and PDF '#{@page_title}.pdf' created************$$"
+    puts "$$*************Process completed and PDF '#{$page_title}.pdf' created************$$"
     #byebug
     
   end # end nairaland

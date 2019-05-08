@@ -9,17 +9,27 @@
         Prawn::Document.generate("#{$page_title}.pdf") do
           # Custom font families
           font_families.update(
-            "Roboto"=>{:normal =>"fonts/Roboto/Roboto-Regular.ttf", :bold =>"fonts/Roboto/Roboto-Bold.ttf", :italic =>"fonts/Roboto/Roboto-Italic.ttf", :boldItalic =>"fonts/Roboto/Roboto-BoldItalic.ttf", :black =>"fonts/Roboto/Roboto-black.ttf", :blackitalic =>"fonts/Roboto/Roboto-BlackItalic.ttf", :light =>"fonts/Roboto/Roboto-light.ttf", :lightitalic =>"fonts/Roboto/Roboto-LightItalic.ttf"}, 
+            "Roboto"=>{:normal =>"fonts/Roboto/Roboto-Regular.ttf", :bold =>"fonts/Roboto/Roboto-Regular.ttf", :italic =>"fonts/Roboto/Roboto-Regular.ttf", :bolditalic =>"fonts/Roboto/Roboto-Regular.ttf"}, 
 
-            "OpenSans"=>{:normal =>"fonts/Open_Sans/OpenSans-Regular.ttf", :bold =>"fonts/Open_Sans/OpenSans-Bold.ttf", :italic =>"fonts/Open_Sans/OpenSans-Italic.ttf", :bolditalic =>"fonts/Open_Sans/OpenSans-BoldItalic.ttf", :extrabold =>"fonts/Open_Sans/OpenSans-ExtraBold.ttf", :extrabolditalic =>"fonts/Open_Sans/OpenSans-ExtraBoldItalic.ttf", :light =>"fonts/Open_Sans/OpenSans-Light.ttf", :lightitalic =>"fonts/Open_Sans/OpenSans-LightItalic.ttf"}
+            "OpenSans"=>{:normal =>"fonts/Open_Sans/OpenSans-Regular.ttf", :bold =>"fonts/Open_Sans/OpenSans-Regular.ttf", :italic =>"fonts/Open_Sans/OpenSans-Regular.ttf", :bold_italic => "fonts/Open_Sans/OpenSans-Regular.ttf"}
           
           )
+          font "OpenSans"
+          default_leading 5
+
+          # Print the summary
+          font_size(25) {text "SUMMARY of Top Posts \n", :color => "FF0000", :align => :center} #Print post topic
+          $top_posts.each do |top|
+            font_size(11) {text "<color rgb='0000FF'>#{top}</color> \n", :align => :justify, :inline_format => true} # print the post message
+
+          end # end top_posts
+
+          start_new_page
+
             # Iterate through and create PDF
           $combined_data_rank.each do |key,val|
             next puts "this data was skipped because appreciation less than 5" if val[:post_likes] < 5 
 
-            font "OpenSans"
-            default_leading 5
 
 
             font_size(18) {text "#{key[:topic]} \n", :color => "0000FF"} #Print post topic
@@ -36,7 +46,7 @@
               
             end # end span
 
-            font "Roboto"
+            #font "Roboto"
             text "Number of likes: <color rgb='0000FF'> #{val[:post_likes]}</color>", :inline_format => true
 
             # Configure the horizontal line
@@ -66,7 +76,7 @@
           font_size(9) {text "Data scrapped from <color rgb='0000FF'>#{$url}</color>, <color rgb='FF0000'>#{$printed_on.strftime("%a, %d %b '%y at %I:%M%p") }</color> by Odogwudozilla", :inline_format => true, :color => "24292E"}
       
         end #end Prawn
-
+        
       end # end self.gen_pdf
 
     end # end GenPdf
