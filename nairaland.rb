@@ -43,7 +43,7 @@ class SiteScraper
     
     # picking the first or second array element as the highest page (still trying to figure out how to make this cleaner as a strange number keeps intermittently showing up as first array element. So I assume the thread page cannot go above 800 pages before the thread is closed)
      
-    highest_page = pages_arr[0].to_i > 800 ? pages_arr[1].to_i : pages_arr[14].to_i
+    highest_page = pages_arr[0].to_i > 800 ? pages_arr[1].to_i : pages_arr[0].to_i
      
     puts "The highest page in this session is #{highest_page}"
     
@@ -138,13 +138,12 @@ class SiteScraper
     
     GenPdf.gen_pdf
 
-    # # Moves the PDF(s) to own folder
-    #     pdf_dir = File.basename(Dir.getwd) + "/PDFs_generated"
-        
-    #     pdf_file = Dir.glob("*.{pdf,xps}")
-    #     FileUtils.mv pdf_file, pdf_dir
+    # Moves the PDF(s) to own folder
+        pdf_dir = "PDFs_generated"
+        pdf_file = Dir.glob("*.{pdf,xps}")
+        pdf_file.each { |pdf| FileUtils.mv pdf, pdf_dir}
     
-    puts "$$*************Process completed and PDF '#{$page_title}.pdf' created************$$"
+    puts "$$*************Process completed and PDF '#{$page_title}.pdf' created and moved to '#{pdf_dir}' folder ************$$"
     #byebug
     
   end # end nairaland
