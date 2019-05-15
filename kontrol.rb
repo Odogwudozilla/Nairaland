@@ -15,7 +15,7 @@ class Kontrol
 
 
     $user_input = ask "Paste the URL/Link from *'nairaland.com'* thread/page you want to scrape: "
-    $user_input = $user_input.gsub(/\A"|(\/")|\\n/, "")
+    $user_input = $user_input.gsub(/\A"|(\/")|\/\z|\\n/, "") #strip away unneeded apostrophes and forward slashes at beginning and end of string
     
     #confirm = ask "your link is **>>#{$user_input}<<**, do you want to continue?(y/n)"
 
