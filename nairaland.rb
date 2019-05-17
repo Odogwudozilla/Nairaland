@@ -22,10 +22,10 @@ class SiteScraper
     
     Kontrol.prompter    
     MyUrls.urls_cache    
-    $urls_list |= [$user_input] #checks if the supplied link exists in the urls_list and appends to list if not
+    $urls_list |= [$chosen_site] #checks if the supplied link exists in the urls_list and appends to list if not
     File.open("urls_nairaland.txt", "w+") { |f| $urls_list.each { |url| f.puts(url)} } # writes the new value of the URL_list to file.
 
-    $url = $user_input #grab the URL from the list on MyUrls class
+    $url = $chosen_site #grab the URL from the list on MyUrls class
     unparsed_page1 = HTTParty.get($url)  
     parsed_page1 = Nokogiri::HTML(unparsed_page1)
     
@@ -43,7 +43,7 @@ class SiteScraper
     
     # picking the first or second array element as the highest page (still trying to figure out how to make this cleaner as a strange number keeps intermittently showing up as first array element. So I assume the thread page cannot go above 1000 pages before the thread is closed)
      
-    $highest_page = pages_arr[0].to_i > 1000 ? pages_arr[1].to_i : pages_arr[0].to_i
+    $highest_page = pages_arr[0].to_i > 1000 ? pages_arr[1].to_i : pages_arr[14].to_i
      
     puts "The highest page in this session is #{$highest_page}"
     

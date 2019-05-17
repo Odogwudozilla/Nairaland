@@ -74,6 +74,17 @@
       
           move_down 30
           font_size(9) {text "Data scrapped from <color rgb='0000FF'>#{$url}</color>, <color rgb='FF0000'>#{$printed_on.strftime("%a, %d %b '%y at %I:%M%p") }</color> by Odogwudozilla", :inline_format => true, :color => "24292E"}
+          
+          ######################################################################
+          # Method for Drawing Pyramid
+          
+            13.times {|n|
+              text "#{' ' * (13 - n)}"
+              text "#{'*' * (2 * n + 1)}", :align => :center
+            }
+        
+          text " ODOGWUDOZILLA na ekene gi", :align => :center
+
       
         end #end Prawn
         
