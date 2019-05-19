@@ -43,7 +43,7 @@ class SiteScraper
     
     # picking the first or second array element as the highest page (still trying to figure out how to make this cleaner as a strange number keeps intermittently showing up as first array element. So I assume the thread page cannot go above 1000 pages before the thread is closed)
      
-    $highest_page = pages_arr[0].to_i > 1000 ? pages_arr[1].to_i : pages_arr[14].to_i
+    $highest_page = pages_arr[0].to_i > 1000 ? pages_arr[1].to_i : pages_arr[0].to_i
      
     puts "The highest page in this session is #{$highest_page}"
     

@@ -20,7 +20,7 @@
           # Print the summary
           font_size(25) {text "SUMMARY of Top Posts \n", :color => "FF0000", :align => :center} #Print post topic
           $top_posts.each do |top|
-            font_size(11) {text "<color rgb='0000FF'>#{top}</color> \n", :align => :justify, :inline_format => true} # print the post message
+            font_size(11) {text "<color rgb='0000FF'>#{top}</color> \n\n", :align => :justify, :inline_format => true} # print the post message
 
           end # end top_posts
 
