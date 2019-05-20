@@ -9,16 +9,26 @@
         Prawn::Document.generate("#{$page_title}.pdf") do
           # Custom font families
           font_families.update(
-            "Roboto"=>{:normal =>"fonts/Roboto/Roboto-Regular.ttf", :bold =>"fonts/Roboto/Roboto-Regular.ttf", :italic =>"fonts/Roboto/Roboto-Regular.ttf", :bolditalic =>"fonts/Roboto/Roboto-Regular.ttf"}, 
+            "PT_Sans"=>{:normal =>"fonts/PT_Sans/PT_Sans-Regular.ttf", :bold =>"fonts/PT_Sans/PT_Sans-Regular.ttf", :italic =>"fonts/PT_Sans/PT_Sans-Regular.ttf", :bolditalic =>"fonts/PT_Sans/PT_Sans-Regular.ttf"}, 
 
-            "OpenSans"=>{:normal =>"fonts/Open_Sans/OpenSans-Regular.ttf", :bold =>"fonts/Open_Sans/OpenSans-Regular.ttf", :italic =>"fonts/Open_Sans/OpenSans-Regular.ttf", :bold_italic => "fonts/Open_Sans/OpenSans-Regular.ttf"}
+            "OpenSans"=>{:normal =>"fonts/Open_Sans/OpenSans-Regular.ttf", :bold =>"fonts/Open_Sans/OpenSans-Regular.ttf", :italic =>"fonts/Open_Sans/OpenSans-Regular.ttf", :bold_italic => "fonts/Open_Sans/OpenSans-Regular.ttf"},
+
+            "Anton"=>{:normal =>"fonts/Anton/Anton-Regular.ttf", :bold =>"fonts/Anton/Anton-Regular.ttf", :italic =>"fonts/Anton/Anton-Regular.ttf", :bold_italic => "fonts/Anton/Anton-Regular.ttf"},
+
+            "Play"=>{:normal =>"fonts/Play/Play-Regular.ttf", :bold =>"fonts/Play/Play-Regular.ttf", :italic =>"fonts/Play/Play-Regular.ttf", :bold_italic => "fonts/Play/Play-Regular.ttf"},
+
+            "Playball"=>{:normal =>"fonts/Playball/Playball-Regular.ttf", :bold =>"fonts/Playball/Playball-Regular.ttf", :italic =>"fonts/Playball/Playball-Regular.ttf", :bold_italic => "fonts/Playball/Playball-Regular.ttf"},
+
+            
           
           )
           font "OpenSans"
           default_leading 5
 
-          # Print the summary
-          font_size(25) {text "SUMMARY of Top Posts \n", :color => "FF0000", :align => :center} #Print post topic
+          font ("Anton") do
+            font_size(25) {text "SUMMARY of Top Posts \n", :color => "FF0000", :align => :center} # Print the summary 
+          end # end font
+
           $top_posts.each do |top|
             font_size(11) {text "<color rgb='0000FF'>#{top}</color> \n\n", :align => :justify, :inline_format => true} # print the post message
 
@@ -30,21 +40,27 @@
           $combined_data_rank.each do |key,val|
             next puts "this data was skipped because appreciation less than 5" if val[:post_likes] < 5 
 
+            font ("Play") do 
+              font_size(18) {text "#{key[:topic]} \n", :color => "0000FF"} #Print post topic
+            end
 
-
-            font_size(18) {text "#{key[:topic]} \n", :color => "0000FF"} #Print post topic
             font_size(9) {text "Posted (on page <color rgb='FF00FF'>#{val[:page_number].to_i + 1}</color>) by:", :inline_format => true} # Print page number
-            font_size(14) {text "#{key[:username]}", :color => "FF0000"} # Print the username
+
+            font ("Playball") do 
+              font_size(14) {text "#{key[:username]}", :color => "FF0000"} # Print the username
+            end
+
             font_size(9) {text "#{key[:date]} \n"} # print the date
             font_size(9) {text "<color rgb='0000FF'><a href='#{key[:topic_target]}'>Click here to Visit page<a/></color>\n", :inline_format => true} # print the target link for the post
             
             move_down 10
             font_size(14) {text "Message:", :color => "FF00FF"} 
 
-            span(490, :position => :center) do
-              font_size(12) {text "#{val[:post_text]}. \n", :align => :left, :indent_paragraphs => 20, :inline_format => true} # print the post message
-              
-            end # end span
+            font ("OpenSans") do
+              span(490, :position => :center) do
+                font_size(13) {text "#{val[:post_text]}. \n", :align => :justify, :indent_paragraphs => 20, :inline_format => true} # print the post message
+              end # end span
+            end
 
             #font "Roboto"
             text "Number of likes: <color rgb='0000FF'> #{val[:post_likes]}</color>", :inline_format => true

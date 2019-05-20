@@ -39,16 +39,30 @@ class SiteScraper
     end # end tpages
     
     pages_arr = pages_arr.reject(&:empty?).sort_by(&:to_i).reverse # eliminate empty/blank values in array, converting to integer an sorting in descending order
-    puts "The page array is #{pages_arr}"
+    #puts "The page array is #{pages_arr}"
+
     
     # picking the first or second array element as the highest page (still trying to figure out how to make this cleaner as a strange number keeps intermittently showing up as first array element. So I assume the thread page cannot go above 1000 pages before the thread is closed)
-     
-    $highest_page = pages_arr[0].to_i > 1000 ? pages_arr[1].to_i : pages_arr[0].to_i
+    
+    array_highest_page = pages_arr[0].to_i > 1000 ? pages_arr[1].to_i : pages_arr[0].to_i
+    chosen_page_array = *(0..array_highest_page)
+    #puts chosen_page_array.inspect
+    
+    until chosen_page_array.include? $highest_page
+      begin
+        $highest_page = ask "How many pages of the site do you want to scrape? (Choose from #{chosen_page_array[1]} to #{chosen_page_array.last}):"
+        $highest_page  = Integer($highest_page)
+      rescue
+        puts "Please enter an integer number within the range provided! "
+        retry
+      end
+      
+    end
      
     puts "The highest page in this session is #{$highest_page}"
     
     
-    $page_nos = *(0..$highest_page) # set array range for page numbers to loop through
+    $page_nos = *(0..$highest_page.to_i) # set array range for page numbers to loop through
 
   end #end prelim
 
