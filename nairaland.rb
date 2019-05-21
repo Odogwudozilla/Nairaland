@@ -21,17 +21,18 @@ class SiteScraper
     $page_nos = []
     
     Kontrol.prompter    
-    MyUrls.urls_cache    
+    #MyUrls.urls_cache    
     $urls_list |= [$chosen_site] #checks if the supplied link exists in the urls_list and appends to list if not
     File.open("urls_nairaland.txt", "w+") { |f| $urls_list.each { |url| f.puts(url)} } # writes the new value of the URL_list to file.
 
+    
     $url = $chosen_site #grab the URL from the list on MyUrls class
     unparsed_page1 = HTTParty.get($url)  
     parsed_page1 = Nokogiri::HTML(unparsed_page1)
     
     tpages = parsed_page1.css('div.body div.nocopy a[href]')
     $page_title = parsed_page1.css('div.body p.bold a[href]').last.text.gsub(/(\/|\\)/, " - ")
-  
+    
     pages_arr = [] #Open an array of pages
     tpages.each do |tpage|
       next if tpage.text.nil? #skip if nil
@@ -40,7 +41,7 @@ class SiteScraper
     
     pages_arr = pages_arr.reject(&:empty?).sort_by(&:to_i).reverse # eliminate empty/blank values in array, converting to integer an sorting in descending order
     #puts "The page array is #{pages_arr}"
-
+    
     
     # picking the first or second array element as the highest page (still trying to figure out how to make this cleaner as a strange number keeps intermittently showing up as first array element. So I assume the thread page cannot go above 1000 pages before the thread is closed)
     
@@ -58,20 +59,21 @@ class SiteScraper
       end
       
     end
-     
+    
     puts "The highest page in this session is #{$highest_page}"
     
     
     $page_nos = *(0..$highest_page.to_i) # set array range for page numbers to loop through
-
+    
   end #end prelim
-
-
   
-
+  
+  
+  
   # Does the actual dirty work
   def nairaland
-  
+    Kontrol.trialz
+    
     $top_posts = []
     head_data = [] # set empty array to collate table heading data on each page
     post_data =[] # set empty array to collate table body data on each page

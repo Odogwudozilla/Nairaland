@@ -11,6 +11,7 @@ class MyUrls
           # ]
 
     #return urls_list[0]
+    puts "These are the current sites in the database:"
     puts $urls_list
   end 
 
