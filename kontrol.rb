@@ -44,11 +44,11 @@ class Kontrol
 
 
     if $chosen_site.split('/').count > 5
-      $chosen_site = $chosen_site.gsub(/\/(?:.(?!\/))+$/, "") #strip away unneeded apostrophes and last forward slash (and everything after) at beginning and end of string only if the last forward slash has appendage
+      $chosen_site = $chosen_site.gsub(/\/(?:.(?!\/))+$/, "") #strip away last forward slash (and everything after) at beginning and end of string only if and only if the (fifth) last forward slash has appendage(s)
     end #end if loop
     
     
-    puts "Thank you for your valid input. Checking database of URLs now..."; sleep(2) 
+    puts "Thank you for your valid input. Checking database of URLs now..."; sleep(1) 
     
     MyUrls.urls_cache    
     if $urls_list.include? $chosen_site
@@ -59,6 +59,8 @@ class Kontrol
     
     Kontrol.trialz 
     
+    $urls_list |= [$chosen_site] #checks if the supplied link exists in the urls_list and appends to list if not
+    File.open("urls_nairaland.txt", "w+") { |f| $urls_list.each { |url| f.puts(url)} } # writes the new value of the URL_list to file.
     
   end # end prompter
   

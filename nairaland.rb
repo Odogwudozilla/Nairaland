@@ -21,10 +21,7 @@ class SiteScraper
     $page_nos = []
     
     Kontrol.prompter    
-    #MyUrls.urls_cache    
-    $urls_list |= [$chosen_site] #checks if the supplied link exists in the urls_list and appends to list if not
-    File.open("urls_nairaland.txt", "w+") { |f| $urls_list.each { |url| f.puts(url)} } # writes the new value of the URL_list to file.
-
+    #MyUrls.urls_cache  
     
     $url = $chosen_site #grab the URL from the list on MyUrls class
     unparsed_page1 = HTTParty.get($url)  
@@ -44,21 +41,19 @@ class SiteScraper
     
     
     # picking the first or second array element as the highest page (still trying to figure out how to make this cleaner as a strange number keeps intermittently showing up as first array element. So I assume the thread page cannot go above 1000 pages before the thread is closed)
-    
     array_highest_page = pages_arr[0].to_i > 1000 ? pages_arr[1].to_i : pages_arr[0].to_i
     chosen_page_array = *(0..array_highest_page)
-    #puts chosen_page_array.inspect
     
-    until chosen_page_array.include? $highest_page
-      begin
+    begin
+      until chosen_page_array.include? $highest_page
         $highest_page = ask "How many pages of the site do you want to scrape? (Choose from #{chosen_page_array[1]} to #{chosen_page_array.last}):"
         $highest_page  = Integer($highest_page)
-      rescue
-        puts "Please enter an integer number within the range provided! "
-        retry
-      end
-      
-    end
+        puts "Your answer is out of range!!! Try again"
+      end #end until loop  
+    rescue
+      puts "Please enter an integer number within the range provided! "
+      retry
+    end #end begin
     
     puts "The highest page in this session is #{$highest_page}"
     
@@ -107,13 +102,6 @@ class SiteScraper
           # byebug
       end # end head_data
       
-      # begin
-      # rescue => exception
-      #   puts exception
-      #   puts exception.backtrace
-      #   #byebug
-      # end
-        # byebug
         
       pdata_all = tmain.css('.pd') #The table data
         
