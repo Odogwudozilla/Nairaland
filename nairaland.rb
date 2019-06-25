@@ -46,12 +46,13 @@ class SiteScraper
     
     begin
       until chosen_page_array.include? $highest_page
+        puts "Please enter a number within range!"
         $highest_page = ask "How many pages of the site do you want to scrape? (Choose from #{chosen_page_array[1]} to #{chosen_page_array.last}):"
         $highest_page  = Integer($highest_page)
-        puts "Your answer is out of range!!! Try again"
+        
       end #end until loop  
     rescue
-      puts "Please enter an integer number within the range provided! "
+      puts "Please enter an integer within the range provided! Try again "
       retry
     end #end begin
     
@@ -76,7 +77,7 @@ class SiteScraper
     #Iterating through the page numbers
     $page_nos.each do |page_no|
   
-      urle = $url + "/" + page_no.to_s
+      urle = $url + "/" + page_no.to_s #set the URL
       unparsed_page = HTTParty.get(urle)
       parsed_page = Nokogiri::HTML(unparsed_page)
       
