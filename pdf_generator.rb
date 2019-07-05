@@ -6,7 +6,7 @@
       def self.gen_pdf
 
         # output the result to PDF file
-        Prawn::Document.generate("#{$page_title}.pdf") do
+        Prawn::Document.generate("#{$page_title + " (Pg " + $lowest_page.to_s + " - " + $highest_page.to_s}).pdf") do
           # Custom font families
           font_families.update(
             "PT_Sans"=>{:normal =>"fonts/PT_Sans/PT_Sans-Regular.ttf", :bold =>"fonts/PT_Sans/PT_Sans-Regular.ttf", :italic =>"fonts/PT_Sans/PT_Sans-Regular.ttf", :bolditalic =>"fonts/PT_Sans/PT_Sans-Regular.ttf"}, 

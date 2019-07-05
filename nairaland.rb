@@ -58,8 +58,10 @@ class SiteScraper
     
     puts "The highest page in this session is #{$highest_page}"
     
+    $lowest_page = ask "Please input the lowest page you want to start (Choose from #{chosen_page_array.first} to #{$highest_page})"
+    $lowest_page = Integer($lowest_page)
     
-    $page_nos = *(0..$highest_page.to_i) # set array range for page numbers to loop through
+    $page_nos = *($lowest_page..$highest_page.to_i) # set array range for page numbers to loop through
     
   end #end prelim
   
@@ -148,7 +150,7 @@ class SiteScraper
         pdf_file = Dir.glob("*.{pdf,xps}")
         pdf_file.each { |pdf| FileUtils.mv pdf, pdf_dir}
     
-    puts "$$*************Process completed and PDF '#{$page_title}.pdf' created and moved to '#{pdf_dir}' folder ************$$"
+    puts "$$*************Process completed and PDF '#{$page_title  + " (Pg " + $lowest_page.to_s + " - " + $highest_page.to_s}).pdf' created and moved to '#{pdf_dir}' folder ************$$"
     #byebug
     
   end # end nairaland
